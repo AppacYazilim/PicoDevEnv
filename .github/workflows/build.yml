@@ -6,37 +6,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .devcontainer
-          push: false
-          tags: myuser/pico-build:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Move cache
+      - name: Build and Run Docker Image
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Run build in Docker container
-        run: |
-          docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build myuser/pico-build:latest make
+          echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
+          docker build --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache .
+          docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest make
 
       - name: Copy uf2 file from Docker container
         run: docker cp pico-build-container:/workspace/build/hello_world.uf2 .
