@@ -25,7 +25,7 @@ jobs:
           echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
           docker build --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache .
           mkdir -p build
-          docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest cmake ..
+          docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest cmake .. -DPICO_BOARD=pico_w
           docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest make
 
       - name: Upload uf2 file as artifact
