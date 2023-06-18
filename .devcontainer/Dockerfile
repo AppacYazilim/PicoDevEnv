@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 # Clone the Raspberry Pi Pico SDK repository
 RUN git clone https://github.com/raspberrypi/pico-sdk.git
+RUN cd pico-sdk && git submodule update --init
 
 # Set the PICO_SDK_PATH environment variable
 ENV PICO_SDK_PATH=/pico-sdk
