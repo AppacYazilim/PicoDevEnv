@@ -22,11 +22,16 @@ jobs:
 
       - name: Build and Run Docker Image
         run: |
-          echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
-          docker build --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache .
+          docker buildx create --use
+          docker buildx build --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max .
           mkdir -p build
           docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest cmake .. -DPICO_BOARD=pico_w
           docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest make
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Upload uf2 file as artifact
         uses: actions/upload-artifact@v2
