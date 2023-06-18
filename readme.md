@@ -1,6 +1,5 @@
 # Raspberry Pi Pico C++ SDK Docker DevContainer
-[![Build and Upload Artifact](https://github.com/AppacYazilim/PicoDevEnv/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/AppacYazilim/PicoDevEnv/actions/workflows/build.yml)
-
+[![Build and Upload Artifact](https://github.com/AppacYazilim/PicoDevEnv/actions/workflows/build.yml/badge.svg)](https://github.com/AppacYazilim/PicoDevEnv/actions/workflows/build.yml)
 Welcome to **PicoDevEnv**, a simplified Raspberry Pi Pico C++ SDK setup using Docker DevContainers. This repository provides a complete development environment for Raspberry Pi Pico that operates within a Docker container. 
 
 ## Why is this method better?
