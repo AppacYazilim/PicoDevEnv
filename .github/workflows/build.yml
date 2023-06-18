@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
@@ -24,8 +24,9 @@ jobs:
         run: |
           echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
           docker build --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache .
+          mkdir -p build
+          docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest cmake ..
           docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest make
-
       - name: Copy uf2 file from Docker container
         run: docker cp pico-build-container:/workspace/build/hello_world.uf2 .
 
