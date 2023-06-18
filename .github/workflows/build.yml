@@ -24,7 +24,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v2
       with:
-        context: .
+        context: .devcontainer
         push: false
         tags: pico-build:latest
         cache-from: type=local,src=/tmp/.buildx-cache
