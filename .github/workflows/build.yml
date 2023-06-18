@@ -23,7 +23,7 @@ jobs:
       - name: Build and Run Docker Image
         run: |
           docker buildx create --use
-          docker buildx build --provenance=false --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max .
+          docker buildx build --provenance=false --load --progress=plain --file .devcontainer/Dockerfile --tag pico-build:latest --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max .
           mkdir -p build
           docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest cmake .. -DPICO_BOARD=pico_w
           docker run --name pico-build-container -v "${{ github.workspace }}:/workspace" -w /workspace/build pico-build:latest make
